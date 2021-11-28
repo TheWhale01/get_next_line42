@@ -6,7 +6,7 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 09:03:22 by hubretec          #+#    #+#             */
-/*   Updated: 2021/11/28 15:21:33 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/11/28 22:15:21 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,19 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-char	*ft_realloc(char buff[2], char *content)
+size_t	ft_strlen(char *str)
+{
+	size_t	i;
+
+	i = 0;
+	if (!str)
+		return (0);
+	while (str[i])
+		i++;
+	return (i);
+}
+
+char	*ft_realloc(char c, char *content)
 {
 	int		i;
 	char	*str;
@@ -23,31 +35,45 @@ char	*ft_realloc(char buff[2], char *content)
 	if (!str)
 		return (0);
 	i = 0;
-	j = 0;
-	while (content[i])
+	if (content)
 	{
-		str[i] = content[i];
-		i++;
+		while (content[i])
+		{
+			str[i] = content[i];
+			i++;
+		}
 	}
-	str[i++] = buff[0];
+	str[i++] = c;
 	str[i] = '\0';
-	if (*content)
-		free(content);
+	if (content)
+		if (*content)
+			free(content);
 	return (str);
 }
 
+#include <stdio.h>
 char	*get_next_line(int fd)
 {
-	char		buff[2];
+	int			byte;
+	char		c;
 	static char	*line;
 
-	line = "";
-	while (read(fd, buff, 1) > 0 && *buff != '\n')
-		line = ft_realloc(buff, line);
-	return (line);
+	line = 0;
+	while (1 && byte > 0)
+	{
+		byte = read(fd, &c, 1);
+		if (byte > 0 && c != '\n')
+			line = ft_realloc(c, line);
+		if (c == '\n' || !byte)
+		{
+			if (byte)
+				line = ft_realloc(c, line);
+			return (line);
+		}
+	}
+	return (NULL);
 }
 
-#include <stdio.h>
 int main(int ac, char **av)
 {
 	int fd;
@@ -58,8 +84,14 @@ int main(int ac, char **av)
 	fd = open(av[1], O_RDONLY);
 	if (fd < 0)
 		return (0);
-	line = get_next_line(fd);
-	printf("%s", line);
-	free(line);
+	while (1)
+	{
+		line = get_next_line(fd);
+		if (!line)
+			break ;
+		printf("%s", line);
+		free(line);
+	}
+	close(fd);
 	return (0);
 }
