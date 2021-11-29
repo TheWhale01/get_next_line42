@@ -6,11 +6,15 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 09:02:53 by hubretec          #+#    #+#             */
-/*   Updated: 2021/11/28 14:51:14 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/11/28 22:43:56 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
+
+# define STDIN 0
+
+char	*get_next_line(int fd);
 
 #endif

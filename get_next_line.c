@@ -6,13 +6,14 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 09:03:22 by hubretec          #+#    #+#             */
-/*   Updated: 2021/11/28 22:15:21 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/11/28 23:01:56 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include "get_next_line.h"
 
 size_t	ft_strlen(char *str)
 {
@@ -26,72 +27,55 @@ size_t	ft_strlen(char *str)
 	return (i);
 }
 
-char	*ft_realloc(char c, char *content)
+char	*addchar(char c, char *str)
 {
 	int		i;
-	char	*str;
+	char	*new;
 
-	str = malloc(sizeof(char) * (ft_strlen(content) + 2));
-	if (!str)
+	new = (char *)malloc(sizeof(char) * (ft_strlen(str) + 2));
+	if (!new)
 		return (0);
-	i = 0;
-	if (content)
+	if (!str)
 	{
-		while (content[i])
-		{
-			str[i] = content[i];
-			i++;
-		}
+		new[0] = c;
+		new[1] = '\0';
+		return (new);
 	}
-	str[i++] = c;
-	str[i] = '\0';
-	if (content)
-		if (*content)
-			free(content);
-	return (str);
+	i = -1;
+	while (str[++i])
+		new[i] = str[i];
+	new[i++] = c;
+	new[i] = '\0';
+	if (*str)
+		free(str);
+	return (new);
 }
 
-#include <stdio.h>
 char	*get_next_line(int fd)
 {
 	int			byte;
 	char		c;
 	static char	*line;
 
+	c = 0;
 	line = 0;
-	while (1 && byte > 0)
+	byte = 1;
+	if (fd < 0)
+		return (NULL);
+	while (byte > 0)
 	{
 		byte = read(fd, &c, 1);
-		if (byte > 0 && c != '\n')
-			line = ft_realloc(c, line);
+		while (byte > 0 && c != '\n')
+		{
+			line = addchar(c, line);
+			byte = read(fd, &c, 1);
+		}
 		if (c == '\n' || !byte)
 		{
 			if (byte)
-				line = ft_realloc(c, line);
+				line = addchar(c, line);
 			return (line);
 		}
 	}
 	return (NULL);
-}
-
-int main(int ac, char **av)
-{
-	int fd;
-	char *line;
-
-	if (ac != 2)
-		return (0);
-	fd = open(av[1], O_RDONLY);
-	if (fd < 0)
-		return (0);
-	while (1)
-	{
-		line = get_next_line(fd);
-		if (!line)
-			break ;
-		printf("%s", line);
-		free(line);
-	}
-	close(fd);
-	return (0);
 }
