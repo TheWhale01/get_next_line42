@@ -6,7 +6,7 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 09:03:22 by hubretec          #+#    #+#             */
-/*   Updated: 2021/11/29 21:07:33 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/11/30 14:56:26 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 #include <stdlib.h>
 #include "get_next_line.h"
 
-int	mem_empty(char *memory)
+int	check_mem(char *memory, char c)
 {
 	while (*memory)
-		if (*(memory++) != -1)
+		if (*(memory++) != c)
 			return (0);
 	return (1);
 }
@@ -55,11 +55,11 @@ char	*get_next_line(int fd)
 	char		*line;
 	static char	*memory;
 
-	memory = get_memory(memory, fd);
+	memory = get_memory(fd);
 	if (!memory)
 		return (NULL);
 	line = fill_line(memory);
-	if (memory && mem_empty(memory))
+	if (memory && check_mem(memory, -1))
 	{
 		free(memory);
 		memory = 0;
@@ -78,10 +78,13 @@ int main(int ac, char **av)
 	fd = open(av[1], O_RDONLY);
 	if (fd < 0)
 		return (0);
+	//while (1)
+	//{
 	line = get_next_line(fd);
 	if (!line)
 		return (0);
 	printf("%s", line);
 	free(line);
+	//}
 	return (0);
 }

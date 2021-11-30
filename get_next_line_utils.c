@@ -6,14 +6,14 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 20:52:58 by hubretec          #+#    #+#             */
-/*   Updated: 2021/11/29 21:03:51 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/11/30 14:57:25 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 
-int	ft_strlen(char *str, char c)
+int	ft_strlen(const char *str, char c)
 {
 	int	i;
 
@@ -39,26 +39,46 @@ char	*ft_strdup(char *str)
 	return (new);
 }
 
-char	*get_memory(char *memory, int fd)
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	int		i;
+	int		s1len;
+	char	*str;
+
+	s1len = ft_strlen(s1, 0);
+	str = (char *)malloc(sizeof(char) * (s1len + ft_strlen(s2, 0) + 1));
+	if (!str)
+		return (0);
+	i = -1;
+	while (s1[++i])
+		str[i] = s1[i];
+	while (s2[i - s1len])
+	{
+		str[i] = s2[i - s1len];
+		i++;
+	}
+	str[i] = '\0';
+	return (str);
+}
+
+char	*get_memory(int fd)
 {
 	int		bytes;
-	char	*buff;
+	char	*memory;
 
-	if (!memory || !*memory)
+	if (BUFFER_SIZE <= 0 || fd < 0)
+		return (NULL);
+	memory = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!memory)
+		return (NULL);
+	bytes = read(fd, memory, BUFFER_SIZE);
+	if (bytes < 0)
+		return (NULL);
+	else if (!bytes)
 	{
-		buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (!buff)
-			return (NULL);
-		bytes = read(fd, buff, BUFFER_SIZE);
-		if (bytes < 0)
-			return (NULL);
-		else if (!bytes)
-		{
-			free(buff);
-			return (NULL);
-		}
-		buff[bytes] = '\0';
-		memory = ft_strdup(buff);
+		free(memory);
+		return (NULL);
 	}
+	memory[bytes] = '\0';
 	return (memory);
 }
