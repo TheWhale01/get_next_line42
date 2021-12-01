@@ -6,7 +6,7 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 20:52:58 by hubretec          #+#    #+#             */
-/*   Updated: 2021/11/30 14:57:25 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/12/01 10:55:02 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,28 @@ int	ft_strlen(const char *str, char c)
 	return (i);
 }
 
-char	*ft_strdup(char *str)
+void	ft_bzero(void *s, size_t n)
 {
-	int		i;
-	char	*new;
+	size_t	i;
+	char	*tab;
 
-	new = malloc(sizeof(char) * (ft_strlen(str, 0) + 1));
-	if (!new)
+	i = 0;
+	tab = (char *)s;
+	while (i < n)
+		tab[i++] = '\0';
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*ptr;
+
+	if (!size || !nmemb)
 		return (NULL);
-	i = -1;
-	while (str[++i])
-		new[i] = str[i];
-	new[i] = '\0';
-	free(str);
-	return (new);
+	ptr = malloc(size * nmemb);
+	if (!ptr)
+		return (0);
+	ft_bzero(ptr, size * nmemb);
+	return (ptr);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -58,27 +66,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		i++;
 	}
 	str[i] = '\0';
+	free((char *)s1);
 	return (str);
-}
-
-char	*get_memory(int fd)
-{
-	int		bytes;
-	char	*memory;
-
-	if (BUFFER_SIZE <= 0 || fd < 0)
-		return (NULL);
-	memory = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!memory)
-		return (NULL);
-	bytes = read(fd, memory, BUFFER_SIZE);
-	if (bytes < 0)
-		return (NULL);
-	else if (!bytes)
-	{
-		free(memory);
-		return (NULL);
-	}
-	memory[bytes] = '\0';
-	return (memory);
 }
