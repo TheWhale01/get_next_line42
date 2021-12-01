@@ -6,11 +6,10 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 09:03:22 by hubretec          #+#    #+#             */
-/*   Updated: 2021/12/01 10:55:50 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/12/01 17:28:26 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include "get_next_line.h"
@@ -18,7 +17,7 @@
 int	mem_empty(char *memory)
 {
 	while (*memory)
-		if (*(memory++) != -1)
+		if (*(memory++) != 127)
 			return (0);
 	return (1);
 }
@@ -44,7 +43,7 @@ char	*get_memory(int fd)
 	while (!line_complete(memory))
 	{
 		bytes = read(fd, tmp, BUFFER_SIZE);
-		if (bytes <= 0)
+		if (bytes <= 0 || (!bytes && !*tmp))
 		{
 			free(tmp);
 			free(memory);
@@ -63,22 +62,22 @@ char	*fill_line(char *memory)
 	int		j;
 	char	*line;
 
-	i = 0;
-	j = 0;
-	line = malloc(sizeof(char) * (ft_strlen(memory, '\n') + 2));
+	line = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!line)
 		return (NULL);
-	while (memory[j] < 0)
+	i = 0;
+	j = 0;
+	while (memory[j] == 127)
 		j++;
 	while (memory[j] != '\n' && memory[j])
 	{
 		line[i++] = memory[j];
-		memory[j++] = -1;
+		memory[j++] = 127;
 	}
 	if (memory[j] == '\n')
 	{
-		line[i++] = '\n';
-		memory[j++] = -1;
+		line[i++] = memory[j];
+		memory[j++] = 127;
 	}
 	line[i] = '\0';
 	return (line);
@@ -98,7 +97,7 @@ char	*get_next_line(int fd)
 			return (NULL);
 	}
 	line = fill_line(memory);
-	if (memory && mem_empty(memory))
+	if (mem_empty(memory))
 	{
 		free(memory);
 		memory = 0;
@@ -106,6 +105,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
+#include <fcntl.h>
 #include <stdio.h>
 int main(int ac, char **av)
 {
@@ -117,10 +117,17 @@ int main(int ac, char **av)
 	fd = open(av[1], O_RDONLY);
 	if (fd < 0)
 		return (0);
+	while (1)
+	{
 	line = get_next_line(fd);
 	if (!line)
 		return (0);
 	printf("%s", line);
 	free(line);
+	}
+	close(fd);
 	return (0);
 }
+
+
+//*memory && bytes > 0
