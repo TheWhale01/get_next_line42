@@ -6,7 +6,7 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 09:03:22 by hubretec          #+#    #+#             */
-/*   Updated: 2021/12/02 10:35:39 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/12/02 10:57:35 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,25 +102,4 @@ char	*get_next_line(int fd)
 		memory = 0;
 	}
 	return (line);
-}
-
-#include <fcntl.h>
-#include <stdio.h>
-int	main(int ac, char **av)
-{
-	int		fd;
-	char	*line;
-
-	if (ac != 2)
-		return (0);
-	fd = open(av[1], O_RDONLY);
-	if (fd < 0)
-		return (0);
-	line = get_next_line(fd);
-	if (!line)
-		return (0);
-	printf("%s", line);
-	free(line);
-	close(fd);
-	return (0);
 }
