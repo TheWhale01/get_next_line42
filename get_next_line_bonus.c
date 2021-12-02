@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 09:03:22 by hubretec          #+#    #+#             */
-/*   Updated: 2021/12/02 15:16:44 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/12/02 15:28:35 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	mem_empty(char *memory)
 {
@@ -79,27 +79,27 @@ char	*get_next_line(int fd)
 {
 	int			bytes;
 	char		*line;
-	static char	*memory;
+	static char	*memory[MAX_FD];
 
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
 	bytes = 1;
-	if (!memory)
+	if (!memory[fd])
 	{
-		memory = get_memory(fd, &bytes);
-		if (!memory)
+		memory[fd] = get_memory(fd, &bytes);
+		if (!memory[fd])
 			return (NULL);
-		else if (!bytes && !*memory)
+		else if (!bytes && !*memory[fd])
 		{
-			free(memory);
+			free(memory[fd]);
 			return (NULL);
 		}
 	}
-	line = fill_line(memory);
-	if (mem_empty(memory))
+	line = fill_line(memory[fd]);
+	if (mem_empty(memory[fd]))
 	{
-		free(memory);
-		memory = 0;
+		free(memory[fd]);
+		memory[fd] = 0;
 	}
 	return (line);
 }

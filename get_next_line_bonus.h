@@ -6,7 +6,7 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 09:02:53 by hubretec          #+#    #+#             */
-/*   Updated: 2021/12/02 15:16:55 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/12/02 15:05:00 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define GET_NEXT_LINE_H
 
 # include <stddef.h>
+
+# define MAX_FD 256
 
 int		line_len(char *str, int start);
 int		ft_strlen(const char *str, int start, char c);
