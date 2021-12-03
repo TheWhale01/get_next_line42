@@ -6,7 +6,7 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 09:03:22 by hubretec          #+#    #+#             */
-/*   Updated: 2021/12/02 15:28:35 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/12/03 14:13:37 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,16 +84,13 @@ char	*get_next_line(int fd)
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
 	bytes = 1;
+	memory[fd] = get_memory(fd, &bytes);
 	if (!memory[fd])
+		return (NULL);
+	else if (!bytes && !*memory[fd])
 	{
-		memory[fd] = get_memory(fd, &bytes);
-		if (!memory[fd])
-			return (NULL);
-		else if (!bytes && !*memory[fd])
-		{
-			free(memory[fd]);
-			return (NULL);
-		}
+		free(memory[fd]);
+		return (NULL);
 	}
 	line = fill_line(memory[fd]);
 	if (mem_empty(memory[fd]))

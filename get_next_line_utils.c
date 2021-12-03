@@ -6,7 +6,7 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 20:52:58 by hubretec          #+#    #+#             */
-/*   Updated: 2021/12/02 09:05:20 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/12/03 14:36:23 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	ft_strlen(const char *str, int start, char c)
 		return (0);
 	while (str[i] && str[i] != c)
 		i++;
-	return (i);
+	return (i - start);
 }
 
 int	line_len(char *str, int start)
@@ -30,6 +30,8 @@ int	line_len(char *str, int start)
 	int	i;
 
 	i = start;
+	if (!str)
+		return (0);
 	while (str[i] && str[i] != '\n')
 		i++;
 	if (str[i] == '\n')
@@ -44,6 +46,8 @@ char	*ft_strchr(const char *s, int c)
 
 	i = -1;
 	x = c;
+	if (!s)
+		return (0);
 	while (s[++i])
 		if (s[i] == x)
 			return ((char *)&s[i]);
