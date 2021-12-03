@@ -6,7 +6,7 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 09:03:22 by hubretec          #+#    #+#             */
-/*   Updated: 2021/12/03 14:13:37 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/12/03 15:33:42 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,15 @@ int	mem_empty(char *memory)
 	return (1);
 }
 
-char	*get_memory(int fd, int *bytes)
+char	*get_memory(int fd, int *bytes, char *memory)
 {
 	char	*tmp;
-	char	*memory;
 
-	memory = 0;
 	tmp = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!tmp)
 		return (NULL);
-	while ((!memory || !ft_strchr(tmp, '\n')) && *bytes)
+	*tmp = '\0';
+	while (!ft_strchr(tmp, '\n') && *bytes)
 	{
 		*bytes = read(fd, tmp, BUFFER_SIZE);
 		if (*bytes < 0)
@@ -41,6 +40,8 @@ char	*get_memory(int fd, int *bytes)
 				free(memory);
 			return (NULL);
 		}
+		if (!*bytes && !*tmp)
+			break ;
 		tmp[*bytes] = '\0';
 		memory = ft_strjoin(memory, tmp);
 	}
@@ -55,7 +56,7 @@ char	*fill_line(char *memory)
 	char	*line;
 
 	i = 0;
-	while (memory[i] == 127)
+	while (memory && memory[i] == 127)
 		i++;
 	line = malloc(sizeof(char) * (line_len(memory, i) + 1));
 	if (!line)
@@ -81,10 +82,10 @@ char	*get_next_line(int fd)
 	char		*line;
 	static char	*memory[MAX_FD];
 
-	if (BUFFER_SIZE <= 0 || fd < 0)
+	if (BUFFER_SIZE <= 0 || fd < 0 || fd > MAX_FD)
 		return (NULL);
 	bytes = 1;
-	memory[fd] = get_memory(fd, &bytes);
+	memory[fd] = get_memory(fd, &bytes, memory[fd]);
 	if (!memory[fd])
 		return (NULL);
 	else if (!bytes && !*memory[fd])
