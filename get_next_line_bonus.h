@@ -6,12 +6,12 @@
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 09:02:53 by hubretec          #+#    #+#             */
-/*   Updated: 2021/12/03 15:20:29 by hubretec         ###   ########.fr       */
+/*   Updated: 2021/12/03 16:53:59 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_BONUS_H
-# define GET_NEXT_LINE__BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # include <stddef.h>
 # define MAX_FD 256
